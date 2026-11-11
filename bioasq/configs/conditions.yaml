@@ -1,0 +1,24 @@
+# Conditions for the first pass. Each runner call = one (model, cond, corruption).
+models:
+  open:
+    - allenai/OLMo-3-7B
+    - allenai/OLMo-3-32B
+    - Qwen/Qwen3.8-27B        # check exact hub id
+  hosted:
+    - gpt-4o
+    - deepseek-v4-pro         # endpoint name on Azure AI Foundry
+    - mistral-large-3
+conditions:
+  - {cond: noctx, corruption: clean}       # question only, the hypothesis-only analogue
+  - {cond: gold,  corruption: clean}
+  - {cond: gold,  corruption: drop-NOUN}
+  - {cond: gold,  corruption: drop-VERB}
+  - {cond: gold,  corruption: drop-ADJ}
+  - {cond: gold,  corruption: drop-DET}
+  - {cond: gold,  corruption: shuffle-n1}
+  - {cond: gold,  corruption: shuffle-n3}
+  - {cond: gold,  corruption: keep-NOUN+VERB}
+caps:
+  yesno: all
+  factoid: 1000
+  list: 500

@@ -1,0 +1,55 @@
+# 2021 ANLI experiments with RoBERTa-large, trained on Nie et al.'s mixture
+# (SNLI + MNLI + FEVER-NLI + ANLI R1-R3, ANLI upsampled 10/20/10), clean and with
+# nouns removed, evaluated on all three ANLI test rounds.
+#
+#   nlicorrupt prepare --task anli_mix,anli_r1,anli_r2,anli_r3 --style 2021,2022   (once)
+#   nlicorrupt grid grids/anli.yaml --blocks reference,reference-released
+#   bash scripts/run_grid.sh grids/anli.txt
+#   nlicorrupt grid grids/anli.yaml --blocks train
+#   bash scripts/run_grid.sh grids/anli.txt
+#
+# Training hyperparameters follow Nie et al.'s released scripts (2 epochs, batch 16,
+# lr 1e-5, max length 156); the 2021 paper reports epochs and batch size only.
+
+blocks:
+  # clean reference from Nie et al.'s released checkpoint ...
+  - name: reference
+    command: evaluate-model
+    matrix:
+      style: ["2021", "2022"]
+    args:
+      model: roberta-large-anli
+      tasks: [anli_r1, anli_r2, anli_r3]
+      corruptions: standard
+      max_len: 156
+
+  # The same model on the corrupted ANLI test files released with the 2021 paper
+  # (all eight word classes for R1-R3), to separate model effects from text format:
+  # the released ANLI files are not plain space-joined like the 2021 MNLI files.
+  - name: reference-released
+    command: evaluate-model
+    args:
+      model: roberta-large-anli
+      tasks: [anli_r1, anli_r2, anli_r3]
+      style: "2021"
+      corruptions: [released-drop-ADJ, released-drop-ADV, released-drop-CONJ, released-drop-DET,
+                    released-drop-NOUN, released-drop-NUM, released-drop-PRON, released-drop-VERB]
+      max_len: 156
+
+  # ... and from our own training run.
+  - name: train
+    command: finetune
+    matrix:
+      train_corruption: [clean, drop-NOUN]
+      seed: [42]
+    args:
+      model: roberta-large
+      task: anli_r1
+      train_task: anli_mix
+      extra_eval_tasks: [anli_r2, anli_r3]
+      style: "2021"
+      eval_corruptions: standard
+      epochs: 2
+      batch_size: 16
+      lr: 1.0e-5
+      max_len: 156

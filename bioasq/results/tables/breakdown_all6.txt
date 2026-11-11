@@ -1,0 +1,101 @@
+== logprobs stored for yes/no ==
+gpt-4o 1518 / 1519
+DeepSeek-V4-Pro 1518 / 1519
+Llama-3.3-70B-Instruct 1518 / 1519
+Qwen_Qwen3.8-27B 1519 / 1519
+allenai_Olmo-3-1025-7B 1519 / 1519
+allenai_Olmo-3-1125-32B 1519 / 1519
+
+== yes/no: acc (share 'yes') on train | gold | acc on gold=yes | gold=no ==
+gpt-4o                   noctx           train  89.4 ( 80.1) | gold  86.3 ( 67.3) | yes  95.5 | no  70.5
+gpt-4o                   clean           train  96.8 ( 75.8) | gold  94.0 ( 66.9) | yes  98.1 | no  91.3
+gpt-4o                   drop-NOUN       train  94.4 ( 77.7) | gold  92.3 ( 66.9) | yes  97.7 | no  84.1
+gpt-4o                   keep-NOUN+VERB  train  92.9 ( 79.2) | gold  87.9 ( 73.8) | yes  97.9 | no  75.9
+gpt-4o                   shuffle-n1      train  95.2 ( 77.1) | gold  90.7 ( 69.4) | yes  97.8 | no  85.1
+DeepSeek-V4-Pro          noctx           train  89.5 ( 76.1) | gold  84.3 ( 64.5) | yes  92.7 | no  77.2
+DeepSeek-V4-Pro          clean           train  96.6 ( 75.4) | gold  94.0 ( 66.9) | yes  97.8 | no  91.8
+DeepSeek-V4-Pro          drop-NOUN       train  94.4 ( 76.9) | gold  93.5 ( 65.7) | yes  97.2 | no  86.1
+DeepSeek-V4-Pro          keep-NOUN+VERB  train  93.5 ( 79.1) | gold  88.7 ( 73.0) | yes  98.2 | no  77.7
+DeepSeek-V4-Pro          shuffle-n1      train  94.9 ( 77.7) | gold  90.7 ( 67.7) | yes  97.8 | no  84.1
+Llama-3.3-70B-Instruct   noctx           train  87.6 ( 83.6) | gold  82.7 ( 71.8) | yes  96.6 | no  59.6
+Llama-3.3-70B-Instruct   clean           train  96.6 ( 74.7) | gold  94.4 ( 66.5) | yes  97.4 | no  93.1
+Llama-3.3-70B-Instruct   drop-NOUN       train  93.9 ( 76.6) | gold  91.1 ( 67.3) | yes  96.7 | no  84.6
+Llama-3.3-70B-Instruct   keep-NOUN+VERB  train  91.3 ( 80.3) | gold  86.7 ( 75.0) | yes  97.7 | no  71.0
+Llama-3.3-70B-Instruct   shuffle-n1      train  95.0 ( 77.1) | gold  89.9 ( 71.0) | yes  97.8 | no  84.1
+Qwen_Qwen3.8-27B         noctx           train  82.1 ( 65.5) | gold  79.4 ( 53.2) | yes  80.7 | no  84.4
+Qwen_Qwen3.8-27B         clean           train  96.5 ( 74.1) | gold  94.0 ( 65.3) | yes  96.8 | no  94.0
+Qwen_Qwen3.8-27B         drop-NOUN       train  91.0 ( 70.6) | gold  89.9 ( 59.7) | yes  90.6 | no  91.6
+Qwen_Qwen3.8-27B         keep-NOUN+VERB  train  93.0 ( 75.2) | gold  89.5 ( 68.1) | yes  95.3 | no  84.6
+Qwen_Qwen3.8-27B         shuffle-n1      train  94.7 ( 74.6) | gold  90.7 ( 67.7) | yes  96.0 | no  88.8
+allenai_Olmo-3-1025-7B   noctx           train  77.0 ( 97.8) | gold  69.0 ( 95.2) | yes  99.7 | no   9.2
+allenai_Olmo-3-1025-7B   clean           train  89.3 ( 85.1) | gold  83.9 ( 78.6) | yes  99.3 | no  58.3
+allenai_Olmo-3-1025-7B   drop-NOUN       train  84.0 ( 90.0) | gold  80.6 ( 81.0) | yes  99.0 | no  40.4
+allenai_Olmo-3-1025-7B   keep-NOUN+VERB  train  82.1 ( 92.4) | gold  77.8 ( 86.3) | yes  99.6 | no  31.0
+allenai_Olmo-3-1025-7B   shuffle-n1      train  80.2 ( 94.6) | gold  77.0 ( 87.1) | yes  99.7 | no  24.1
+allenai_Olmo-3-1125-32B  noctx           train  84.9 ( 80.8) | gold  82.3 ( 69.0) | yes  93.1 | no  60.5
+allenai_Olmo-3-1125-32B  clean           train  95.9 ( 77.5) | gold  92.3 ( 69.4) | yes  98.7 | no  86.1
+allenai_Olmo-3-1125-32B  drop-NOUN       train  91.5 ( 79.9) | gold  91.5 ( 69.4) | yes  97.4 | no  75.2
+allenai_Olmo-3-1125-32B  keep-NOUN+VERB  train  89.2 ( 82.1) | gold  85.5 ( 75.4) | yes  97.4 | no  64.3
+allenai_Olmo-3-1125-32B  shuffle-n1      train  90.6 ( 83.2) | gold  86.7 ( 73.4) | yes  98.7 | no  65.8
+
+== factoid strict acc / list F1: train | gold ==
+gpt-4o                   factoid  noctx           train  30.1 | gold  37.5
+gpt-4o                   factoid  clean           train  43.1 | gold  48.6
+gpt-4o                   factoid  drop-NOUN       train  32.2 | gold  36.7
+gpt-4o                   factoid  keep-NOUN+VERB  train  39.9 | gold  35.9
+gpt-4o                   factoid  shuffle-n1      train  41.8 | gold  46.6
+gpt-4o                   list     noctx           train  31.5 | gold  30.1
+gpt-4o                   list     clean           train  50.8 | gold  45.5
+gpt-4o                   list     drop-NOUN       train  32.4 | gold  28.4
+gpt-4o                   list     keep-NOUN+VERB  train  46.5 | gold  39.6
+gpt-4o                   list     shuffle-n1      train  47.2 | gold  41.3
+DeepSeek-V4-Pro          factoid  noctx           train  30.6 | gold  31.9
+DeepSeek-V4-Pro          factoid  clean           train  46.6 | gold  52.6
+DeepSeek-V4-Pro          factoid  drop-NOUN       train  36.6 | gold  43.0
+DeepSeek-V4-Pro          factoid  keep-NOUN+VERB  train  42.3 | gold  39.8
+DeepSeek-V4-Pro          factoid  shuffle-n1      train  45.7 | gold  45.8
+DeepSeek-V4-Pro          list     noctx           train  29.6 | gold  29.6
+DeepSeek-V4-Pro          list     clean           train  53.8 | gold  47.6
+DeepSeek-V4-Pro          list     drop-NOUN       train  37.6 | gold  33.1
+DeepSeek-V4-Pro          list     keep-NOUN+VERB  train  48.6 | gold  40.8
+DeepSeek-V4-Pro          list     shuffle-n1      train  50.7 | gold  43.1
+Llama-3.3-70B-Instruct   factoid  noctx           train  29.4 | gold  32.3
+Llama-3.3-70B-Instruct   factoid  clean           train  46.6 | gold  47.4
+Llama-3.3-70B-Instruct   factoid  drop-NOUN       train  33.4 | gold  34.7
+Llama-3.3-70B-Instruct   factoid  keep-NOUN+VERB  train  39.2 | gold  37.1
+Llama-3.3-70B-Instruct   factoid  shuffle-n1      train  42.2 | gold  49.0
+Llama-3.3-70B-Instruct   list     noctx           train  28.5 | gold  28.5
+Llama-3.3-70B-Instruct   list     clean           train  55.3 | gold  49.5
+Llama-3.3-70B-Instruct   list     drop-NOUN       train  32.6 | gold  29.9
+Llama-3.3-70B-Instruct   list     keep-NOUN+VERB  train  47.1 | gold  41.7
+Llama-3.3-70B-Instruct   list     shuffle-n1      train  49.4 | gold  45.2
+Qwen_Qwen3.8-27B         factoid  noctx           train  24.6 | gold  28.7
+Qwen_Qwen3.8-27B         factoid  clean           train  48.2 | gold  52.2
+Qwen_Qwen3.8-27B         factoid  drop-NOUN       train  31.0 | gold  37.5
+Qwen_Qwen3.8-27B         factoid  keep-NOUN+VERB  train  41.1 | gold  41.4
+Qwen_Qwen3.8-27B         factoid  shuffle-n1      train  44.1 | gold  47.4
+Qwen_Qwen3.8-27B         list     noctx           train  23.8 | gold  27.5
+Qwen_Qwen3.8-27B         list     clean           train  57.0 | gold  49.8
+Qwen_Qwen3.8-27B         list     drop-NOUN       train  31.0 | gold  29.1
+Qwen_Qwen3.8-27B         list     keep-NOUN+VERB  train  49.4 | gold  41.7
+Qwen_Qwen3.8-27B         list     shuffle-n1      train  51.4 | gold  44.2
+allenai_Olmo-3-1025-7B   factoid  noctx           train  15.8 | gold  15.9
+allenai_Olmo-3-1025-7B   factoid  clean           train  38.7 | gold  43.0
+allenai_Olmo-3-1025-7B   factoid  drop-NOUN       train  20.3 | gold  24.7
+allenai_Olmo-3-1025-7B   factoid  keep-NOUN+VERB  train  28.9 | gold  26.7
+allenai_Olmo-3-1025-7B   factoid  shuffle-n1      train  27.5 | gold  32.7
+allenai_Olmo-3-1025-7B   list     noctx           train  13.2 | gold  16.5
+allenai_Olmo-3-1025-7B   list     clean           train  42.2 | gold  40.8
+allenai_Olmo-3-1025-7B   list     drop-NOUN       train  14.4 | gold  16.4
+allenai_Olmo-3-1025-7B   list     keep-NOUN+VERB  train  32.9 | gold  29.8
+allenai_Olmo-3-1025-7B   list     shuffle-n1      train  29.5 | gold  29.4
+allenai_Olmo-3-1125-32B  factoid  noctx           train  21.0 | gold  19.5
+allenai_Olmo-3-1125-32B  factoid  clean           train  40.1 | gold  46.2
+allenai_Olmo-3-1125-32B  factoid  drop-NOUN       train  19.4 | gold  25.9
+allenai_Olmo-3-1125-32B  factoid  keep-NOUN+VERB  train  30.3 | gold  30.3
+allenai_Olmo-3-1125-32B  factoid  shuffle-n1      train  34.7 | gold  41.0
+allenai_Olmo-3-1125-32B  list     noctx           train  21.5 | gold  20.3
+allenai_Olmo-3-1125-32B  list     clean           train  48.9 | gold  42.4
+allenai_Olmo-3-1125-32B  list     drop-NOUN       train  18.1 | gold  15.9
+allenai_Olmo-3-1125-32B  list     keep-NOUN+VERB  train  39.5 | gold  32.7
+allenai_Olmo-3-1125-32B  list     shuffle-n1      train  40.7 | gold  32.8

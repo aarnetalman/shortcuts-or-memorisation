@@ -1,0 +1,62 @@
+# Step 2: reproduce headline numbers of the 2022 and 2021 papers.
+#
+#   nlicorrupt grid grids/reproduce.yaml --blocks mrpc-2022     # fast check first
+#   bash scripts/run_grid.sh grids/reproduce.txt
+#   nlicorrupt grid grids/reproduce.yaml                        # everything
+#   bash scripts/run_grid.sh grids/reproduce.txt
+#
+# Targets (MNLI-m, NOUN):
+#   2022 RoBERTa-base: clean 87.89, Corrupt-Test 72.85, Corrupt-Train 85.64, Train+Test 77.46
+#   2021 BERT-base-uncased: clean 83.74, Corrupt-Test 69.80, Corrupt-Train 80.72, Train+Test 73.38
+#   2022 MRPC: clean 88.73, Corrupt-Test 82.35
+#
+# Each run evaluates our regenerated corruption and the released file side by side.
+
+blocks:
+  - name: mrpc-2022
+    command: finetune
+    matrix:
+      train_corruption: [clean, drop-NOUN, released-drop-NOUN]
+      seed: [13, 42, 87]
+    args:
+      model: roberta-base
+      task: mrpc
+      style: "2022"
+      eval_corruptions: [clean, drop-NOUN, released-drop-NOUN]
+      epochs: 3
+      batch_size: 32
+      lr: 2.0e-5
+      max_len: 128
+
+  - name: mnli-2022
+    command: finetune
+    matrix:
+      train_corruption: [clean, drop-NOUN, released-drop-NOUN]
+      seed: [13, 42, 87]
+    args:
+      model: roberta-base
+      task: mnli
+      style: "2022"
+      eval_corruptions: [clean, drop-NOUN, drop-VERB, released-drop-NOUN]
+      epochs: 3
+      batch_size: 32
+      lr: 2.0e-5
+      max_len: 128
+
+  # 2021: Google's TF BERT, 10 epochs, batch size 100. The learning rate and warmup
+  # are not reported; we use the BERT reference defaults (2e-5, 10% warmup).
+  - name: mnli-2021
+    command: finetune
+    matrix:
+      train_corruption: [clean, drop-NOUN, released-drop-NOUN]
+      seed: [13, 42, 87]
+    args:
+      model: bert-base-uncased
+      task: mnli
+      style: "2021"
+      eval_corruptions: [clean, drop-NOUN, drop-VERB, released-drop-NOUN, released-drop-VERB]
+      epochs: 10
+      batch_size: 100
+      lr: 2.0e-5
+      warmup_ratio: 0.1
+      max_len: 128

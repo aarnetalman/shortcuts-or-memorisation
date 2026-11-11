@@ -1,0 +1,96 @@
+# Local open models on one 96 GB GPU: answer log-probabilities and linear probes.
+#
+#   nlicorrupt download --model-groups open_models     # weights first
+#   nlicorrupt grid grids/open_models.yaml --blocks logprob-zero-shot
+#   bash scripts/run_grid.sh grids/open_models.txt
+#
+# Probing is two steps: extract hidden states, then train probes (CPU-light).
+#   nlicorrupt grid grids/open_models.yaml --blocks extract,extract-sampled   -> submit, then
+#   nlicorrupt grid grids/open_models.yaml --blocks probe,probe-sampled       -> submit
+#
+# Cost control: zero-shot uses the full evaluation sets. Five-shot and probing use
+# the fixed 2,000-item label-stratified sample of QQP and MNLI that the paid APIs
+# also see; full QQP alone would take ~25 GPU-hours per large model
+# and exemplar arm, and ~50 GB of hidden states per model.
+
+_tasks_full: &tasks_full [cola, sst2, mrpc, stsb, qnli, rte, anli_r1, anli_r2, anli_r3]
+_tasks_sampled: &tasks_sampled [qqp, mnli]
+_models: &models [qwen3.8-27b, muse-glimmer-30b, olmo3-7b, olmo3-7b-instruct, olmo3-32b, olmo3.1-32b-instruct]
+
+blocks:
+  - name: logprob-zero-shot
+    command: logprob
+    matrix:
+      model: *models
+      task: [cola, sst2, mrpc, qqp, stsb, mnli, qnli, rte, anli_r1, anli_r2, anli_r3]
+    args:
+      corruptions: standard
+      style: "2022"
+      batch_size: 8
+
+  # Five-shot: exemplars from the training set, clean or corrupted
+  # (the in-context analogue of Corrupt-Train).
+  - name: logprob-five-shot
+    command: logprob
+    matrix:
+      model: *models
+      task: *tasks_full
+      exemplars: [clean, drop-NOUN, drop-VERB]
+    args:
+      shots: 5
+      corruptions: standard
+      style: "2022"
+      batch_size: 4
+
+  - name: logprob-five-shot-sampled
+    command: logprob
+    matrix:
+      model: *models
+      task: *tasks_sampled
+      exemplars: [clean, drop-NOUN, drop-VERB]
+    args:
+      shots: 5
+      eval_items: 2000
+      corruptions: standard
+      style: "2022"
+      batch_size: 4
+
+  - name: extract
+    command: extract
+    matrix:
+      model: *models
+      task: *tasks_full
+    args: &extract_args
+      corruptions: standard
+      train_corruptions: [clean, drop-NOUN, drop-VERB]
+      max_train: 20000
+      style: "2022"
+      batch_size: 8
+
+  - name: extract-sampled
+    command: extract
+    matrix:
+      model: *models
+      task: *tasks_sampled
+    args:
+      <<: *extract_args
+      max_eval: 2000
+
+  - name: probe
+    command: probe
+    matrix:
+      model: *models
+      task: *tasks_full
+    args: &probe_args
+      corruptions: standard
+      train_corruptions: [clean, drop-NOUN, drop-VERB]
+      style: "2022"
+
+  - name: probe-sampled
+    command: probe
+    matrix:
+      model: *models
+      task: *tasks_sampled
+    args:
+      <<: *probe_args
+      max_eval: 2000

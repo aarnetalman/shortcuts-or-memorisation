@@ -1,0 +1,26 @@
+# Model-based contamination indicators for the local open models (one 96 GB GPU each).
+# The n-gram check against OLMo's data runs separately (needs internet, no GPU):
+#   nlicorrupt contamination-infinigram --tasks cola,sst2,mrpc,qqp,stsb,mnli,qnli,rte,anli_r1,anli_r2,anli_r3,fresh_nli
+#
+#   nlicorrupt grid grids/contamination.yaml
+#   bash scripts/run_grid.sh grids/contamination.txt
+#
+# fresh_nli needs NLICORRUPT_PRIVATE (the private control-set repo); drop it from
+# the task list until the items exist.
+
+_tasks: &tasks [cola, sst2, mrpc, qqp, stsb, mnli, qnli, rte, anli_r1, anli_r2, anli_r3, fresh_nli]
+
+blocks:
+  - name: guess
+    command: contamination-guess
+    matrix:
+      model: [qwen3.8-27b, muse-glimmer-30b, olmo3-7b-instruct, olmo3.1-32b-instruct]
+    args:
+      tasks: *tasks
+
+  - name: mink
+    command: contamination-mink
+    matrix:
+      model: [qwen3.8-27b, muse-glimmer-30b, olmo3-7b, olmo3-32b]
+    args:
+      tasks: *tasks

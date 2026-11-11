@@ -1,0 +1,13 @@
+# Install PyTorch for your platform first (https://pytorch.org/get-started/locally/),
+# then: pip install -r requirements.txt && pip install --no-deps -e .
+transformers==5.22.1
+accelerate==1.15.0
+datasets==5.1.0
+huggingface_hub>=0.30
+nltk==3.10.4
+scikit-learn==1.9.1
+scipy==1.18.1
+pyyaml>=6
+pandas>=2
+matplotlib>=3.8
+pytest>=8

@@ -1,0 +1,161 @@
+# OpenAI-compatible chat endpoints for the hosted models.
+#
+# Paid calls are never made by default: `nlicorrupt prompt` only prints a plan and a
+# cost estimate unless it gets --confirm-spend and --max-usd. A model whose prices are
+# still null cannot be run for real. Fill in the provider's model name and current
+# prices (USD per million tokens) before asking for approval to run.
+#
+# API keys are read from the environment variable named in api_key_env; never put
+# keys in this file.
+
+providers:
+  openrouter:
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+  together:
+    base_url: https://api.together.xyz/v1
+    api_key_env: TOGETHER_API_KEY
+  deepseek:
+    base_url: https://api.deepseek.com/v1
+    api_key_env: DEEPSEEK_API_KEY
+  mistral:
+    base_url: https://api.mistral.ai/v1
+    api_key_env: MISTRAL_API_KEY
+  # Azure AI Foundry resource: set base_url to your own resource.
+  # One key for both endpoints, read from AZURE_AI_API_KEY.
+  azure-openai:            # GPT deployments (Azure OpenAI API)
+    base_url: https://<your-resource>.openai.azure.com
+    api_version: 2025-04-01-preview
+    deployment_in_path: true
+    api_key_env: AZURE_AI_API_KEY
+    auth: api-key
+  azure-inference:         # other deployments (Azure AI model inference, OpenAI-compatible)
+    base_url: https://<your-resource>.services.ai.azure.com/models
+    api_version: 2024-05-01-preview
+    api_key_env: AZURE_AI_API_KEY
+    auth: bearer
+  frontier:  # vendor to be decided; most vendors offer an OpenAI-compatible endpoint
+    base_url: null
+    api_key_env: FRONTIER_API_KEY
+  mock:  # local test server only
+    base_url: http://127.0.0.1:8765/v1
+    api_key_env: MOCK_API_KEY
+
+models:
+  # alias: provider, provider-side model name, prices, request parameters.
+  # params_off / params_on: extra request fields for the main grid (reasoning off)
+  # and the reasoning sub-study (D8b). Check each provider's documentation.
+  kimi-k3:
+    provider: openrouter
+    name: null            # TO FILL: provider's model id for Kimi K3
+    usd_per_m_input: null
+    usd_per_m_output: null
+    params_off: {}
+    params_on: {}
+  deepseek-v4.1-flash:
+    provider: openrouter
+    name: null            # TO FILL: id for DeepSeek-V4.1-Flash-1017
+    usd_per_m_input: null
+    usd_per_m_output: null
+    params_off: {}
+    params_on: {}
+  mistral-large-4:
+    provider: openrouter
+    name: null            # TO FILL: id for Mistral Large 4
+    usd_per_m_input: null
+    usd_per_m_output: null
+    params_off: {}
+    params_on: {}
+  frontier:
+    provider: frontier
+    name: null
+    usd_per_m_input: null
+    usd_per_m_output: null
+    params_off: {}
+    params_on: {}
+  # Azure deployments. `name` is the deployment name. Prices (USD per million tokens)
+  # are third-party figures from 2026-07 and NOT verified against Microsoft's price list:
+  # check them in the Azure cost view after the pilot and correct them here.
+  # `reasoning: always` marks deployments whose reasoning cannot be switched off; they
+  # refuse --reasoning off, and their hidden reasoning tokens are billed as output.
+  azure-gpt-4o:
+    provider: azure-openai
+    name: gpt-4o
+    usd_per_m_input: 2.5     # 2.5 (OpenAI list) to 5.0 (some Azure listings); unverified
+    usd_per_m_output: 10.0
+    # top log-probabilities of the answer token: answer scores for the answer-bias metrics
+    params_off: {logprobs: true, top_logprobs: 10}
+    params_on: {}
+  azure-gpt-5.5:
+    provider: azure-openai
+    name: gpt-5.5
+    reasoning: always
+    timeout: 600
+    usd_per_m_input: 5.0     # unverified
+    usd_per_m_output: 30.0
+    params_off: {}
+    # reasoning models reject temperature and max_tokens; output limit covers reasoning
+    params_on: {temperature: null, max_tokens: null, max_completion_tokens: 2048, reasoning_effort: low}
+  azure-gpt-6.1-sol:
+    provider: azure-openai
+    name: gpt-6.1-sol
+    usd_per_m_input: null    # TO FILL: price and whether it reasons
+    usd_per_m_output: null
+    params_off: {}
+    params_on: {}
+  azure-deepseek-v4-pro:
+    provider: azure-inference
+    name: DeepSeek-V4-Pro
+    usd_per_m_input: 1.74    # unverified
+    usd_per_m_output: 3.48
+    params_off: {logprobs: true, top_logprobs: 10}   # remove if the deployment rejects it
+    params_on: {}
+  azure-mistral-large-3:
+    provider: azure-inference
+    name: Mistral-Large-3
+    usd_per_m_input: 0.63    # 0.50-0.63 listed; upper end used; unverified
+    usd_per_m_output: 1.88
+    params_off: {}
+    params_on: {}
+  azure-grok-4.7:
+    provider: azure-inference
+    name: grok-4.7
+    reasoning: always
+    timeout: 600             # seconds per request: reasoning can take minutes
+    usd_per_m_input: 2.0     # unverified
+    usd_per_m_output: 6.0
+    params_off: {}
+    # grok-4.7 rejects seed 0 ("Seed must be positive"); sampling is not fixable anyway
+    params_on: {temperature: null, max_tokens: null, max_completion_tokens: 2048, seed: null}
+  # Generators for the fresh control set (fresh-generate): models NOT evaluated in the
+  # study, from two families, so no evaluated model is scored on text in its own style.
+  fresh-generator-a:         # Llama 4 Maverick (deployed by SC on the models endpoint)
+    provider: azure-inference
+    name: Llama-4-Maverick-17B-128E-Instruct-FP8
+    usd_per_m_input: 0.35    # Foundry listing; others list 0.25 / 1.00; unverified
+    usd_per_m_output: 1.41
+    params_off: {}
+    params_on: {}
+  fresh-generator-b:         # GPT-5.5 (GPT endpoint); always reasons
+    provider: azure-openai
+    name: gpt-5.5
+    reasoning: always
+    timeout: 600
+    usd_per_m_input: 5.0     # unverified, as azure-gpt-5.5
+    usd_per_m_output: 30.0
+    params_off: {}
+    params_on: {temperature: null, max_tokens: null, max_completion_tokens: 4000, reasoning_effort: low}
+  mock-model:
+    provider: mock
+    name: mock-model
+    usd_per_m_input: 1.0
+    usd_per_m_output: 2.0
+    params_off: {}
+    params_on: {}
+  mock-model-logprobs:
+    provider: mock
+    name: mock-model
+    usd_per_m_input: 1.0
+    usd_per_m_output: 2.0
+    params_off: {logprobs: true, top_logprobs: 5}
+    params_on: {}

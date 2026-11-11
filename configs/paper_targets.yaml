@@ -1,0 +1,44 @@
+# Published numbers to compare reproductions against (0-100 scale).
+# 2022: Talman et al. (*SEM), RoBERTa-base, Tables 2 and 3.
+# 2021: Talman et al. (NoDaLiDa), BERT-base-uncased on MNLI-m (Table 2);
+#       RoBERTa-large on ANLI (Tables 4-6; clean = Nie et al. 2020).
+
+"2022":
+  model: roberta-base
+  clean: {cola: 64.05, mnli: 87.89, mrpc: 88.73, qnli: 92.64, qqp: 91.32, rte: 70.04, sst2: 94.61, stsb: 90.08}
+  NOUN:
+    corrupt_train: {cola: 39.72, mnli: 85.64, mrpc: 86.27, qnli: 89.13, qqp: 86.69, rte: 47.29, sst2: 94.04, stsb: 81.67}
+    corrupt_test: {cola: 17.75, mnli: 72.85, mrpc: 82.35, qnli: 71.02, qqp: 72.57, rte: 53.79, sst2: 87.27, stsb: 56.12}
+    train_and_test: {cola: 34.33, mnli: 77.46, mrpc: 80.15, qnli: 82.02, qqp: 84.17, rte: 47.29, sst2: 88.76, stsb: 63.52}
+  VERB:
+    corrupt_train: {cola: 23.26, mnli: 86.95, mrpc: 85.54, qnli: 92.00, qqp: 89.49, rte: 65.34, sst2: 93.69, stsb: 87.63}
+    corrupt_test: {cola: 4.30, mnli: 77.61, mrpc: 85.54, qnli: 87.41, qqp: 86.01, rte: 65.70, sst2: 89.33, stsb: 85.54}
+    train_and_test: {cola: 20.22, mnli: 80.32, mrpc: 85.05, qnli: 90.15, qqp: 89.05, rte: 65.34, sst2: 89.56, stsb: 86.22}
+
+"2021":
+  model: bert-base-uncased
+  clean: {mnli: 83.74}
+  mnli:
+    # train set / corruption: [Corrupt-Train, Corrupt-Test, Corrupt-Train-and-Test]
+    NUM: [82.37, 81.71, 81.87]
+    CONJ: [83.09, 82.75, 83.10]
+    ADV: [80.21, 72.41, 75.69]
+    PRON: [83.27, 81.98, 82.65]
+    ADJ: [81.67, 74.61, 76.44]
+    DET: [83.15, 79.29, 81.32]
+    VERB: [81.40, 73.96, 76.30]
+    NOUN: [80.72, 69.80, 73.38]
+    NOUN+PRON: [79.74, 68.41, 72.14]
+  alldrop: {mnli: 84.09}
+  anli_clean_nie2020: {anli_r1: 73.8, anli_r2: 48.9, anli_r3: 44.4}
+  anli_corrupt_test:
+    CONJ: [70.2, 49.0, 46.5]
+    PRON: [69.6, 49.7, 45.0]
+    DET: [69.5, 49.4, 45.0]
+    ADV: [67.1, 49.6, 43.8]
+    ADJ: [60.2, 45.1, 45.0]
+    NUM: [58.7, 43.8, 45.1]
+    VERB: [54.6, 44.7, 39.3]
+    NOUN: [43.7, 36.0, 32.4]
+  anli_noun_train: [57.6, 40.3, 41.0]
+  anli_shuffle: {n1: [35.5, 33.8, 36.0], n2: [45.4, 39.8, 37.1], n3: [49.4, 40.7, 38.4]}
