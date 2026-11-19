@@ -1,0 +1,30 @@
+# Model registry. Ids are Hugging Face hub ids; append @<revision> to pin a commit.
+# Release status checked on 2026-11-01.
+
+encoders:
+  roberta-base: FacebookAI/roberta-base            # 2022 baseline
+  bert-base-uncased: google-bert/bert-base-uncased  # 2021 MNLI baseline
+  roberta-large: FacebookAI/roberta-large          # 2021 ANLI baseline
+  modernbert-base: answerdotai/ModernBERT-base
+  xlmr-base: FacebookAI/xlm-roberta-base
+
+# Released checkpoint of Nie et al. (2020), trained on SNLI+MNLI+FEVER+ANLI.
+# Used as a second clean ANLI reference. The main branch only has
+# pytorch_model.bin; refs/pr/1 is the hub's safetensors conversion of the same weights.
+anli_reference:
+  roberta-large-anli: ynie/roberta-large-snli_mnli_fever_anli_R1_R2_R3-nli@refs/pr/1
+
+# Open models scored locally by label log-probability and probed (one 96 GB GPU each).
+open_models:
+  qwen3.8-27b: Qwen/Qwen3.8-27B
+  muse-glimmer-30b: meta-models/Muse-Glimmer-30B
+  olmo3-7b: allenai/Olmo-3-1025-7B
+  olmo3-7b-instruct: allenai/Olmo-3-7B-Instruct
+  olmo3-32b: allenai/Olmo-3-1125-32B
+  olmo3.1-32b-instruct: allenai/Olmo-3.1-32B-Instruct
+
+# Models prompted through hosted OpenAI-compatible endpoints (paid; see configs/providers.yaml).
+hosted:
+  kimi-k3: moonshotai/Kimi-K3
+  deepseek-v4.1-flash: deepseek-ai/DeepSeek-V4.1-Flash-1017
+  mistral-large-4: mistralai/Mistral-Large-4-1T-A52B

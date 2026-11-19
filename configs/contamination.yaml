@@ -1,0 +1,22 @@
+# Contamination checks (see src/nlicorrupt/contamination/).
+
+infinigram:
+  endpoint: https://api.infini-gram.io/
+  # Index covering OLMo 3's pre-training data. TO FILL: pick the index name from
+  # https://infini-gram.readthedocs.io (list of available indexes) that matches the
+  # OLMo 3 data mix; older OLMo/Dolma indexes give a lower bound only.
+  index: null
+  n: 13                    # words per n-gram (the usual 13-gram contamination test)
+  max_ngrams_per_field: 2  # evenly spaced 13-grams per text field
+  full_max_words: 50       # also query the whole field if it is at most this long
+  min_words_full_match: 13 # a whole-field match counts only for fields at least this long
+  sleep_seconds: 1.0       # at most one request a second: the free API blocks faster clients
+  subsample: {qqp: 2000, mnli: 2000}
+
+guess:
+  max_new_tokens: 6
+  subsample: {qqp: 2000, mnli: 2000}
+
+mink:
+  k: 0.2                   # fraction of lowest-scoring tokens averaged by Min-K%++
+  subsample: {qqp: 2000, mnli: 2000}

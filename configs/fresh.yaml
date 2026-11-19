@@ -1,0 +1,28 @@
+# Fresh control set (src/nlicorrupt/freshgen/). Items live in $NLICORRUPT_PRIVATE/fresh/.
+
+premises:
+  # Only text published or created on or after this date. It should be later than the
+  # training cut-off of every evaluated model.
+  since: "2026-09-01"
+  until: null                      # null: today
+  sources: [currentevents, wikipedia]   # Wikinews closed in May 2026
+  per_source: 150                  # premises kept per source
+  per_article: 2                   # at most this many premises from one article
+  min_words: 12
+  max_words: 50
+  seed: 0
+  # Wikimedia asks automated clients to identify themselves. Set a contact (an email or
+  # a project URL) before running: https://meta.wikimedia.org/wiki/User-Agent_policy
+  user_agent: "nlicorrupt-fresh/0.1 (research project; contact: TO FILL)"
+  sleep_seconds: 0.5               # between API requests
+  # Drop premises with any 13-gram found in this infini-gram index (copied older text).
+  infinigram_check: true
+
+generate:
+  styles: [mnli, cuefree]
+  temperature: 0.7
+  max_tokens: 400
+  mnli_examples: 2                 # MNLI training pairs per label shown in the 'mnli' style
+
+validation:
+  annotators: [AT, SC]

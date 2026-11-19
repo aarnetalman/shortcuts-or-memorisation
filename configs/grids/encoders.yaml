@@ -1,0 +1,76 @@
+# Full encoder grid (2022 setup): 8 GLUE tasks x clean + 8 Corrupt-Train sets x 3 seeds.
+# Each run evaluates on the full standard corruption set, so Corrupt-Test and
+# Corrupt-Train-and-Test need no extra training.
+#
+#   nlicorrupt grid grids/encoders.yaml --blocks glue-small     # CoLA, MRPC, RTE, STS-B
+#   bash scripts/run_grid.sh grids/encoders.txt
+#   nlicorrupt grid grids/encoders.yaml --blocks glue-large     # SST-2, QNLI, QQP, MNLI
+#   bash scripts/run_grid.sh grids/encoders.txt
+#
+# Prerequisite: nlicorrupt prepare --task all --style 2021,2022 (see README).
+
+_hparams_2022: &hp2022
+  style: "2022"
+  eval_corruptions: standard
+  epochs: 3
+  batch_size: 32
+  lr: 2.0e-5
+  max_len: 128
+
+_train_sets: &train_sets [clean, drop-ADJ, drop-ADV, drop-CONJ, drop-DET, drop-NOUN, drop-NUM, drop-PRON, drop-VERB]
+
+blocks:
+  - name: glue-small
+    command: finetune
+    matrix:
+      model: [roberta-base, bert-base-uncased, modernbert-base, xlmr-base]
+      task: [cola, mrpc, rte, stsb]
+      train_corruption: *train_sets
+      seed: [13, 42, 87]
+    args: *hp2022
+
+  - name: glue-large
+    command: finetune
+    matrix:
+      model: [roberta-base, bert-base-uncased, modernbert-base, xlmr-base]
+      task: [sst2, qnli, qqp, mnli]
+      train_corruption: *train_sets
+      seed: [13, 42, 87]
+    args: *hp2022
+
+  # 2021 MNLI setup with BERT-base-uncased: single-class drops, NOUN+PRON,
+  # the keep-only sets and AllDrop (original + all eight Corrupt-Train sets).
+  # 10 epochs at batch size 100; AllDrop is 9x the data (use --time=36:00:00).
+  - name: mnli-2021
+    command: finetune
+    matrix:
+      train_corruption: [clean, drop-ADJ, drop-ADV, drop-CONJ, drop-DET, drop-NOUN, drop-NUM, drop-PRON, drop-VERB,
+                         drop-NOUN+PRON, keep-NOUN+PRON+VERB, keep-NOUN+ADV+VERB, keep-NOUN+VERB,
+                         keep-NOUN+VERB+ADJ, keep-NOUN+VERB+ADV+ADJ]
+      seed: [13, 42, 87]
+    args:
+      model: bert-base-uncased
+      task: mnli
+      style: "2021"
+      eval_corruptions: standard
+      epochs: 10
+      batch_size: 100
+      lr: 2.0e-5
+      warmup_ratio: 0.1
+      max_len: 128
+
+  - name: mnli-2021-alldrop
+    command: finetune
+    matrix:
+      seed: [13, 42, 87]
+    args:
+      model: bert-base-uncased
+      task: mnli
+      train_corruption: alldrop
+      style: "2021"
+      eval_corruptions: standard
+      epochs: 10
+      batch_size: 100
+      lr: 2.0e-5
+      warmup_ratio: 0.1
+      max_len: 128
